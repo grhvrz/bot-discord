@@ -6,6 +6,9 @@ function handleMention(client) {
 
         const targetUserId = '488988053931556864'; // ID user target
 
+        // memerikasa apakah pesan itu mention masal atau bukan
+        if (message.mentions.everyone || message.content.includes('@here')) return;
+
         if (message.mentions.has(targetUserId)) {
             const targetUser = await client.users.fetch(targetUserId);
             const member = message.guild.members.cache.get(targetUserId);

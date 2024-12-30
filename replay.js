@@ -11,6 +11,8 @@ async function handleReply(client) {
             ['bosen', 'makanya keluar jangan main hp mulu'],
             ['ajg', 'lu tainya bego'],
             ['roblox', 'Ayo, Login nih gw'],
+            ['memek', 'Kasar banget ajg gak disekolahin ya lu'],
+            ['kontol', 'Kasar banget ajg gak disekolahin ya lu'],
             ['gta', 'Gass ajg cari tcw gw bantai ade-adean lu semua'],
             ['pb', 'Login burning hall gw acak acak'],
             ['bot', 'apa si bat bot bat bot'],
