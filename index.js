@@ -3,6 +3,7 @@ require('dotenv').config(); // Memuat variabel lingkungan
 const { handleMention } = require('./pesan');
 const { handleReply } = require('./replay');
 const { handleChat } = require('./chat');
+const { handleTakeRole } = require('./getrole');
 
 // Membuat instance client Discord
 const client = new Client({
@@ -12,8 +13,10 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildPresences,
         GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessageReactions,
     ],
-    partials: ['CHANNEL'],
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
 // Fungsi untuk menangani reaksi pada foto di channel tertentu
@@ -49,12 +52,13 @@ client.once('ready', () => {
     console.log(`Bot sudah online sebagai ${client.user.tag}`);
 
     // Mengatur aktivitas bot
-    client.user.setActivity('Oyinn', { type: ActivityType.Watching });
+    client.user.setActivity('DONGAK', { type: ActivityType.Playing });
 
-    // Memanggil fungsi handler untuk DM dan mention
+    // memanggil function
     handleMention(client);
     handleReply(client);
     handleChat(client);
+    handleTakeRole(client);
 });
 
 // Login dengan token
@@ -62,7 +66,7 @@ client.login(process.env.TOKEN).catch((err) => {
     console.error('Gagal login:', err);
 });
 
-module.exports = { client }; // Mengekspor client untuk digunakan di file lain
+module.exports = { client }; 
 
 
 
