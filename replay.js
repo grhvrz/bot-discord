@@ -1,4 +1,5 @@
 async function handleReply(client) {
+    console.log('handleReply dipanggil'); // Debug log
     client.on('messageCreate', async (message) => {
         if (message.author.bot) return;
 

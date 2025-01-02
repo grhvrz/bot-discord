@@ -1,6 +1,7 @@
 const moment = require('moment-timezone');
 
 function handleMention(client) {
+    console.log('handleMention dipanggil'); // Debug log
     client.on('messageCreate', async (message) => {
         if (message.author.bot) return; // Abaikan pesan dari bot
 
