@@ -2,8 +2,8 @@ const { Client, GatewayIntentBits, PermissionsBitField, ActivityType } = require
 require('dotenv').config(); // Memuat variabel lingkungan
 const { handleMention } = require('./pesan');
 const { handleReply } = require('./replay');
-const { handleTakeRole } = require('./getrole');
 const { handleLogs } = require('./logs');
+const { handleAntiLink } = require('./configlink');
 
 // Membuat instance client Discord
 const client = new Client({
@@ -30,8 +30,8 @@ client.once('ready', () => {
     // memanggil function
     handleMention(client);
     handleReply(client);
-    handleTakeRole(client);
     handleLogs(client);
+    handleAntiLink(client);
 });
 
 

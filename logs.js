@@ -22,6 +22,7 @@ function saveSettings(settings) {
 }
 
 async function handleLogs(client) {
+    console.log('handleLogs dipanggil');
     client.on('messageCreate', async (message) => {
         if (message.author.bot || !message.content.startsWith('!setuplogs')) return;
 
