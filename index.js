@@ -4,6 +4,7 @@ const { handleMention } = require('./pesan');
 const { handleReply } = require('./replay');
 const { handleLogs } = require('./logs');
 const { handleAntiLink } = require('./configlink');
+const { handleThreed } = require('./threed');
 
 // Membuat instance client Discord
 const client = new Client({
@@ -32,6 +33,7 @@ client.once('ready', () => {
     handleReply(client);
     handleLogs(client);
     handleAntiLink(client);
+    handleThreed(client);
 });
 
 
