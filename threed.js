@@ -35,21 +35,16 @@ async function handleThreed(client) {
             let settings = loadSettings();
             const guildId = message.guild.id;
 
-            if (settings[guildId]?.threedChannel) {
-                return message.reply(
-                    `Fitur Threed sudah diatur untuk <#${settings[guildId].threedChannel}>. Ketik perintah ini lagi untuk mengubahnya.`
-                );
-            }
-
             const filter = (response) => response.author.id === message.author.id;
 
-            message.reply('Silakan mention channel yang akan diaktifkan fitur Threed.');
+            message.reply('Silakan mention satu atau lebih channel yang akan diaktifkan fitur Threed.');
             const channelCollector = message.channel.createMessageCollector({ filter, max: 1, time: 60000 });
 
             channelCollector.on('collect', async (channelMessage) => {
-                const mentionedChannel = channelMessage.mentions.channels.first();
-                if (!mentionedChannel) {
-                    return message.reply('Kamu harus mention channel yang valid!');
+                const mentionedChannels = channelMessage.mentions.channels;
+
+                if (!mentionedChannels.size) {
+                    return message.reply('Kamu harus mention setidaknya satu channel yang valid!');
                 }
 
                 message.reply('Silakan masukkan judul default untuk thread.');
@@ -59,12 +54,16 @@ async function handleThreed(client) {
                     const threadTitle = titleMessage.content;
 
                     if (!settings[guildId]) settings[guildId] = {};
-                    settings[guildId].threedChannel = mentionedChannel.id;
-                    settings[guildId].threadTitle = threadTitle;
+                    if (!settings[guildId].threedChannels) settings[guildId].threedChannels = {};
+
+                    mentionedChannels.forEach((channel) => {
+                        settings[guildId].threedChannels[channel.id] = { threadTitle };
+                    });
 
                     saveSettings(settings);
+
                     message.reply(
-                        `Fitur Threed berhasil diatur untuk channel ${mentionedChannel} dengan judul thread "${threadTitle}". Bot akan membuat thread untuk setiap pesan di channel tersebut.`
+                        `Fitur Autothreed berhasil diatur untuk channel ${mentionedChannels.map((ch) => `<#${ch.id}>`).join(', ')} dengan judul thread "${threadTitle}". Bot akan membuat thread untuk setiap pesan di channel tersebut.`
                     );
                 });
             });
@@ -78,19 +77,24 @@ async function handleThreed(client) {
         if (message.author.bot) return;
 
         // Buat thread jika pesan dikirim di channel yang diatur
-        if (guildSettings?.threedChannel && message.channel.id === guildSettings.threedChannel) {
+        if (guildSettings?.threedChannels && guildSettings.threedChannels[message.channel.id]) {
             try {
-                const threadName = guildSettings.threadTitle || 'Thread Baru';
-        
+                const threadName = guildSettings.threedChannels[message.channel.id].threadTitle || 'Thread Baru';
+    
                 await message.startThread({
                     name: threadName,
                     reason: 'Pesan baru di channel yang diatur untuk fitur Threed',
                 });
                 console.log(`Thread dibuat untuk pesan di channel ${message.channel.id} dengan judul "${threadName}".`);
             } catch (error) {
-                console.error(`Gagal membuat thread di channel ${message.channel.id}:`, error);
+                // Tangani error spesifik: Thread sudah dibuat untuk pesan ini
+                if (error.code === 160004) {
+                    // Abaikan tanpa mencetak apa pun ke terminal
+                } else {
+                    console.error(`Gagal membuat thread di channel ${message.channel.id}:`, error);
+                }
             }
-        }        
+        }
     });
 
     client.on('guildDelete', async (guild) => {
