@@ -24,8 +24,29 @@ const client = new Client({
 client.once('ready', () => {
     console.log(`Bot sudah online sebagai ${client.user.tag}`);
 
-    // Mengatur aktivitas bot
-    client.user.setActivity('DONGKRAK', { type: ActivityType.Playing });
+    // Daftar aktivitas
+    const activities = [
+        { name: 'DONGKRAK', type: ActivityType.Playing },
+        { name: 'ALL THE MODS', type: ActivityType.Playing },
+        { name: 'MFX', type: ActivityType.Playing }
+    ];
+
+    let currentActivity = 0; // Index aktivitas saat ini
+
+    // Fungsi untuk mengganti aktivitas
+    const changeActivity = () => {
+        const activity = activities[currentActivity];
+        client.user.setActivity(activity.name, { type: activity.type });
+
+        // Pindah ke aktivitas berikutnya, ulang ke awal jika sudah di akhir
+        currentActivity = (currentActivity + 1) % activities.length;
+    };
+
+    // Panggil fungsi pertama kali
+    changeActivity();
+
+    // Ganti aktivitas setiap 10 detik
+    setInterval(changeActivity, 10000);
 
 
     // memanggil function
